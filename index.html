@@ -1,3 +1,5 @@
+---
+---
 <!doctype html>
 <html lang="en">
 <head>
@@ -72,14 +74,33 @@
     input, select { background: var(--white); border: 1px solid var(--line); border-radius: 0; color: var(--ink); padding: .43rem .55rem; }
     .results { color: var(--muted); font-size: .82rem; margin: 1rem 0 .5rem; }
     .archive, .media-list, .timeline { list-style: none; padding: 0; margin: 0; }
-    .archive li { display: grid; grid-template-columns: 4.3rem 1fr; gap: .6rem 1rem; padding: 1rem 0; border-top: 1px solid var(--line); }
-    .archive li:last-child { border-bottom: 1px solid var(--line); }
+    .publication-tools { margin-bottom: 1.15rem; }
+    .publication-tools > summary { cursor: pointer; color: var(--green); font-size: .88rem; font-weight: 650; }
+    .publication-tools[open] > summary { margin-bottom: .7rem; }
+    .publication-groups { border-bottom: 1px solid var(--line); }
+    .publication-group { border-top: 1px solid var(--line); }
+    .publication-group summary { display: flex; align-items: center; gap: .8rem; padding-block: .8rem; cursor: pointer; list-style: none; }
+    .publication-group summary::-webkit-details-marker { display: none; }
+    .publication-group summary:hover { color: var(--green); }
+    .category-name { flex: 1; font-family: var(--serif); font-size: clamp(1.2rem, 3.5vw, 1.75rem); line-height: 1.18; }
+    .category-count { color: var(--muted); font-size: .87rem; font-variant-numeric: tabular-nums; }
+    .category-icon { flex: 0 0 1rem; color: var(--green); text-align: center; }
+    .category-icon::before { content: '+'; }
+    .publication-group[open] .category-icon::before { content: '−'; }
+    .archive li { display: grid; grid-template-columns: 4.3rem 1fr; gap: .6rem 1rem; padding: .8rem 0; border-top: 1px solid var(--line); }
     .archive time { color: var(--rust); font-size: .89rem; padding-top: .13rem; }
     .archive h3 { font-size: clamp(1.15rem, 3vw, 1.48rem); line-height: 1.23; letter-spacing: -.017em; }
     .archive h3 a { color: inherit; }
     .archive h3 a:hover { color: var(--rust); }
     .details { display: flex; flex-wrap: wrap; gap: .15rem .7rem; margin-top: .35rem; color: var(--muted); font-size: .83rem; }
     .details span + span::before { content: "·"; margin-inline-end: .65rem; }
+    .writing-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem; list-style: none; margin: 0; padding: 0; }
+    .writing-list > li { border-top: 1px solid var(--line); padding: 1rem 0; }
+    .writing-list h3, .writing-list summary { font-family: var(--serif); font-size: 1.32rem; line-height: 1.25; }
+    .writing-list summary { cursor: pointer; color: var(--green); }
+    .writing-meta { color: var(--muted); font-size: .82rem; margin-top: .3rem; }
+    .writing-body { margin-top: .8rem; }
+    .writing-body p + p { margin-top: .65rem; }
     .media-primary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .85rem; margin-bottom: 2rem; }
     .media-card { padding: clamp(1rem, 4vw, 2rem); background: var(--sage); border: 1px solid #c5d1c4; }
     .media-card h3 { margin-block: .35rem .6rem; }
@@ -103,7 +124,7 @@
     @media (max-width: 43rem) {
       .wrap { width: calc(100% - 2rem); }
       .masthead .wrap { row-gap: .4rem; }
-      .hero, .section-heading, .cv-grid { grid-template-columns: 1fr; }
+      .hero, .section-heading, .cv-grid, .writing-list { grid-template-columns: 1fr; }
       .hero { gap: 2rem; }
     }
     @media (max-width: 32rem) {
@@ -121,6 +142,7 @@
       <a class="wordmark" href="#top">Sezai Ozan Zeybek</a>
       <nav aria-label="Main navigation" data-tr-aria="Ana menü">
         <a href="#publications" data-tr="Yayınlar">Publications</a>
+        <a href="#writing" data-tr="Yazılar">Writing</a>
         <a href="#media" data-tr="Podcast ve video">Podcasts &amp; video</a>
         <a href="#cv">CV</a>
         <button class="language" id="language" type="button" lang="tr" hidden>Türkçe</button>
@@ -154,10 +176,11 @@
     <section class="section" id="publications" aria-labelledby="publications-heading">
       <div class="wrap">
         <div class="section-heading">
-          <h2 id="publications-heading" data-tr="Yayınlar ve yazılar">Publications &amp; writing</h2>
-          <p data-tr="Akademik makaleler, kitaplar, çocuk kitapları, denemeler ve çeviriler.">Academic articles, books, children’s books, essays and translations.</p>
+          <h2 id="publications-heading" data-tr="Yayınlar">Publications</h2>
         </div>
-        <form class="filters" id="filters" role="search" aria-label="Publication filters" data-tr-aria="Yayın filtreleri" hidden>
+        <details class="publication-tools" id="publication-tools" hidden>
+          <summary data-tr="Yayın ara ve filtrele">Search and filter publications</summary>
+          <form class="filters" id="filters" role="search" aria-label="Publication filters" data-tr-aria="Yayın filtreleri">
           <label class="search-field"><span data-tr="Yayın ara">Search publications</span>
             <input id="query" type="search" placeholder="Title, author or publisher" data-tr-placeholder="Başlık, yazar veya yayınevi">
           </label>
@@ -205,70 +228,22 @@
             </select>
           </label>
           <button class="clear" type="reset" data-tr="Temizle">Clear</button>
-        </form>
-        <p class="results" id="results" role="status" aria-live="polite" hidden></p>
-        <ul class="archive" id="archive">
-          <li data-kind="article" data-language="en" data-year="2026" data-author="Sezai Ozan Zeybek">
-            <time datetime="2026">2026</time>
-            <div class="entry">
-              <h3 lang="en">The Dispositive of Academic Humanitarianism: A Critical Appraisal of Scholar Protection Policies in Europe, 2015–2024</h3>
-              <div class="details"><span data-tr="Dergi makalesi">Journal article</span><span>South Atlantic Quarterly 4, 882–892</span><span data-tr="İngilizce">English</span></div>
-            </div>
-          </li>
-          <li data-kind="incollection" data-language="tr" data-year="2026" data-author="Sezai Ozan Zeybek">
-            <time datetime="2026">2026</time>
-            <div class="entry">
-              <h3 lang="tr">Başkasının Acısına Bakmak: Kırılganlık, Şefkat ve Ortak Hayaller</h3>
-              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Zamanın Duyguları · İletişim</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
-          <li data-kind="review" data-language="tr" data-year="2026" data-author="Sezai Ozan Zeybek">
-            <time datetime="2026">2026</time>
-            <div class="entry">
-              <h3 lang="tr"><a href="https://bianet.org/yazi/berlin-ankara-olursa-sari-zarflar-318305">Berlin, Ankara olursa: Sarı Zarflar</a></h3>
-              <div class="details"><span data-tr="Film eleştirisi">Film review</span><span>bianet</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
+          </form>
+          <p class="results" id="results" role="status" aria-live="polite" hidden></p>
+        </details>
+        <div class="publication-groups" id="archive">
+          <details class="publication-group">
+            <summary>
+              <span class="category-name" data-tr="Kitaplar">Books</span>
+              <span class="category-count">3</span>
+              <span class="category-icon" aria-hidden="true"></span>
+            </summary>
+            <ul class="archive">
           <li data-kind="book" data-language="en" data-year="2025" data-author="Sezai Ozan Zeybek">
             <time datetime="2025">2025</time>
             <div class="entry">
               <h3 lang="en"><a href="https://doi.org/10.1007/978-981-95-0321-6">Animals, Justice, and the Politics of Violence: Shared Struggles in Turkey</a></h3>
               <div class="details"><span data-tr="Kitap">Book</span><span>Palgrave Macmillan</span><span data-tr="İngilizce">English</span></div>
-            </div>
-          </li>
-          <li data-kind="essay" data-language="tr" data-year="2025" data-author="Sezai Ozan Zeybek">
-            <time datetime="2025">2025</time>
-            <div class="entry">
-              <h3 lang="tr"><a href="https://birikimdergisi.com/dergiler/birikim/1/sayi-438-ekim-2025/10206">Yapay zekâ çağında hakikati (ve aklımızı) nasıl koruruz?</a></h3>
-              <div class="details"><span data-tr="Deneme">Essay</span><span>Birikim 438, 41–49</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
-          <li data-kind="incollection" data-language="en" data-year="2024" data-author="Sezai Ozan Zeybek">
-            <time datetime="2024">2024</time>
-            <div class="entry">
-              <h3 lang="en">I Exist in Us</h3>
-              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Transect of Coexistence: Inquiry into Nature, Art and Habitat · NAHR/ListLab</span><span data-tr="İngilizce">English</span></div>
-            </div>
-          </li>
-          <li data-kind="children" data-language="tr" data-year="2024" data-author="Sezai Ozan Zeybek">
-            <time datetime="2024">2024</time>
-            <div class="entry">
-              <h3 lang="tr">Dünyayı Değiştiren Üç Kız</h3>
-              <div class="details"><span data-tr="Çocuk kitabı">Children’s book</span><span>Nito</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
-          <li data-kind="incollection" data-language="tr" data-year="2023" data-author="Sezai Ozan Zeybek">
-            <time datetime="2023">2023</time>
-            <div class="entry">
-              <h3 lang="tr">Toprak Kendine Ait: Türkiye’de Mülkiyet, Arazi Toplulaştırmaları ve Tarım Reformları</h3>
-              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Türkiye’de Mülkiyet · Metis</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
-          <li data-kind="essay" data-language="tr" data-year="2022" data-author="Sezai Ozan Zeybek">
-            <time datetime="2022">2022</time>
-            <div class="entry">
-              <h3 lang="tr"><a href="https://bianet.org/haber/hayvanlar-bizim-cocugumuz-mu-269312">Hayvanlar bizim çocuğumuz mu?</a></h3>
-              <div class="details"><span data-tr="Deneme">Essay</span><span>bianet</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
           <li data-kind="book" data-language="tr" data-year="2021" data-author="Sezai Ozan Zeybek">
@@ -278,13 +253,6 @@
               <div class="details"><span data-tr="Kitap">Book</span><span>Nito</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
-          <li data-kind="incollection" data-language="en" data-year="2021" data-author="Sezai Ozan Zeybek, Hilâl Alkan">
-            <time datetime="2021">2021</time>
-            <div class="entry">
-              <h3 lang="en">61% with the Fruit Flies</h3>
-              <div class="details"><span>Sezai Ozan Zeybek, Hilâl Alkan</span><span data-tr="Kitap bölümü">Book chapter</span><span>Ecological Manifestos for a Post-pandemic World · Mekanda Adalet Derneği</span><span data-tr="İngilizce">English</span></div>
-            </div>
-          </li>
           <li data-kind="book" data-language="tr" data-year="2020" data-author="Sezai Ozan Zeybek">
             <time datetime="2020">2020</time>
             <div class="entry">
@@ -292,11 +260,20 @@
               <div class="details"><span data-tr="Kitap">Book</span><span>NotaBene</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
-          <li data-kind="incollection" data-language="en" data-year="2020" data-author="Sezai Ozan Zeybek">
-            <time datetime="2020">2020</time>
+            </ul>
+          </details>
+          <details class="publication-group">
+            <summary>
+              <span class="category-name" data-tr="Çocuk kitapları">Children’s books</span>
+              <span class="category-count">6</span>
+              <span class="category-icon" aria-hidden="true"></span>
+            </summary>
+            <ul class="archive">
+          <li data-kind="children" data-language="tr" data-year="2024" data-author="Sezai Ozan Zeybek">
+            <time datetime="2024">2024</time>
             <div class="entry">
-              <h3 lang="en">Killing Time in a Roma Neighbourhood: Habitus of Precariousness</h3>
-              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Urban Neighbourhood Formations: Boundaries, Narrations, Intimacies · Routledge</span><span data-tr="İngilizce">English</span></div>
+              <h3 lang="tr">Dünyayı Değiştiren Üç Kız</h3>
+              <div class="details"><span data-tr="Çocuk kitabı">Children’s book</span><span>Nito</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
           <li data-kind="children" data-language="tr" data-year="2020" data-author="Sezai Ozan Zeybek">
@@ -313,25 +290,11 @@
               <div class="details"><span data-tr="Çocuk kitabı">Children’s book</span><span>Nito</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
-          <li data-kind="incollection" data-language="en" data-year="2019" data-author="Sezai Ozan Zeybek">
-            <time datetime="2019">2019</time>
-            <div class="entry">
-              <h3 lang="en">Security, Dispossession and Industrial Food Production in Turkey</h3>
-              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Transforming Socio-Natures in Turkey: Landscapes, State and Environmental Movements · Routledge</span><span data-tr="İngilizce">English</span></div>
-            </div>
-          </li>
           <li data-kind="children" data-language="tr" data-year="2019" data-author="Sezai Ozan Zeybek">
             <time datetime="2019">2019</time>
             <div class="entry">
               <h3 lang="tr">Kim Kurtarsın Bu Ayıyı?</h3>
               <div class="details"><span data-tr="Çocuk kitabı">Children’s book</span><span>Nito</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
-          <li data-kind="article" data-language="tr" data-year="2018" data-author="Sezai Ozan Zeybek">
-            <time datetime="2018">2018</time>
-            <div class="entry">
-              <h3 lang="tr">Geçmişle Yüzleşmek: Türkiye’de ve Almanya’da Hafıza Siyaseti</h3>
-              <div class="details"><span data-tr="Dergi makalesi">Journal article</span><span>Cogito 90</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
           <li data-kind="children" data-language="tr" data-year="2018" data-author="Sezai Ozan Zeybek">
@@ -348,6 +311,71 @@
               <div class="details"><span data-tr="Çocuk kitabı">Children’s book</span><span>Nito</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
+            </ul>
+          </details>
+          <details class="publication-group">
+            <summary>
+              <span class="category-name" data-tr="Makaleler ve kitap bölümleri">Articles &amp; book chapters</span>
+              <span class="category-count">19</span>
+              <span class="category-icon" aria-hidden="true"></span>
+            </summary>
+            <ul class="archive">
+          <li data-kind="article" data-language="en" data-year="2026" data-author="Sezai Ozan Zeybek">
+            <time datetime="2026">2026</time>
+            <div class="entry">
+              <h3 lang="en">The Dispositive of Academic Humanitarianism: A Critical Appraisal of Scholar Protection Policies in Europe, 2015–2024</h3>
+              <div class="details"><span data-tr="Dergi makalesi">Journal article</span><span>South Atlantic Quarterly 4, 882–892</span><span data-tr="İngilizce">English</span></div>
+            </div>
+          </li>
+          <li data-kind="incollection" data-language="tr" data-year="2026" data-author="Sezai Ozan Zeybek">
+            <time datetime="2026">2026</time>
+            <div class="entry">
+              <h3 lang="tr">Başkasının Acısına Bakmak: Kırılganlık, Şefkat ve Ortak Hayaller</h3>
+              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Zamanın Duyguları · İletişim</span><span data-tr="Türkçe">Turkish</span></div>
+            </div>
+          </li>
+          <li data-kind="incollection" data-language="en" data-year="2024" data-author="Sezai Ozan Zeybek">
+            <time datetime="2024">2024</time>
+            <div class="entry">
+              <h3 lang="en">I Exist in Us</h3>
+              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Transect of Coexistence: Inquiry into Nature, Art and Habitat · NAHR/ListLab</span><span data-tr="İngilizce">English</span></div>
+            </div>
+          </li>
+          <li data-kind="incollection" data-language="tr" data-year="2023" data-author="Sezai Ozan Zeybek">
+            <time datetime="2023">2023</time>
+            <div class="entry">
+              <h3 lang="tr">Toprak Kendine Ait: Türkiye’de Mülkiyet, Arazi Toplulaştırmaları ve Tarım Reformları</h3>
+              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Türkiye’de Mülkiyet · Metis</span><span data-tr="Türkçe">Turkish</span></div>
+            </div>
+          </li>
+          <li data-kind="incollection" data-language="en" data-year="2021" data-author="Sezai Ozan Zeybek, Hilâl Alkan">
+            <time datetime="2021">2021</time>
+            <div class="entry">
+              <h3 lang="en">61% with the Fruit Flies</h3>
+              <div class="details"><span>Sezai Ozan Zeybek, Hilâl Alkan</span><span data-tr="Kitap bölümü">Book chapter</span><span>Ecological Manifestos for a Post-pandemic World · Mekanda Adalet Derneği</span><span data-tr="İngilizce">English</span></div>
+            </div>
+          </li>
+          <li data-kind="incollection" data-language="en" data-year="2020" data-author="Sezai Ozan Zeybek">
+            <time datetime="2020">2020</time>
+            <div class="entry">
+              <h3 lang="en">Killing Time in a Roma Neighbourhood: Habitus of Precariousness</h3>
+              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Urban Neighbourhood Formations: Boundaries, Narrations, Intimacies · Routledge</span><span data-tr="İngilizce">English</span></div>
+            </div>
+          </li>
+          <li data-kind="incollection" data-language="en" data-year="2019" data-author="Sezai Ozan Zeybek">
+            <time datetime="2019">2019</time>
+            <div class="entry">
+              <h3 lang="en">Security, Dispossession and Industrial Food Production in Turkey</h3>
+              <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Transforming Socio-Natures in Turkey: Landscapes, State and Environmental Movements · Routledge</span><span data-tr="İngilizce">English</span></div>
+            </div>
+          </li>
+          <li data-kind="article" data-language="tr" data-year="2018" data-author="Sezai Ozan Zeybek">
+            <time datetime="2018">2018</time>
+            <div class="entry">
+              <h3 lang="tr">Geçmişle Yüzleşmek: Türkiye’de ve Almanya’da Hafıza Siyaseti</h3>
+              <div class="details"><span data-tr="Dergi makalesi">Journal article</span><span>Cogito 90</span><span data-tr="Türkçe">Turkish</span></div>
+            </div>
+          </li>
           <li data-kind="article" data-language="tr" data-year="2016" data-author="Sezai Ozan Zeybek">
             <time datetime="2016">2016</time>
             <div class="entry">
@@ -360,13 +388,6 @@
             <div class="entry">
               <h3 lang="tr">Biyo-Politika, Güvenlik ve Anti-Piyasalar: Türkiye’de Endüstriyel Hayvancılığın Seyri</h3>
               <div class="details"><span data-tr="Dergi makalesi">Journal article</span><span>Toplum ve Bilim 138/139</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
-          <li data-kind="translation" data-language="tr" data-year="2015" data-author="Michel-Rolph Trouillot">
-            <time datetime="2015">2015</time>
-            <div class="entry">
-              <h3 lang="tr">Geçmişi Susturmak: Tarihin Üretilmesi ve İktidar</h3>
-              <div class="details"><span>Michel-Rolph Trouillot</span><span data-tr="Çeviri">Translation</span><span>İthaki Yayınları</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
           <li data-kind="incollection" data-language="en" data-year="2014" data-author="Hilâl Alkan, Sezai Ozan Zeybek">
@@ -404,13 +425,6 @@
               <div class="details"><span data-tr="Kitap bölümü">Book chapter</span><span>Öl Dediler Öldüm: Türkiye’de Şehitlik Miti · İletişim Yayınları</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
-          <li data-kind="essay" data-language="tr" data-year="2014" data-author="Sezai Ozan Zeybek">
-            <time datetime="2014">2014</time>
-            <div class="entry">
-              <h3 lang="tr"><a href="https://bianet.org/yazi/bu-cagin-irkcilari-biz-olabilir-miyiz-153015">Bu Çağın Irkçıları Biz Olabilir miyiz?</a></h3>
-              <div class="details"><span data-tr="Deneme">Essay</span><span>bianet</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
           <li data-kind="article" data-language="tr" data-year="2013" data-author="Sezai Ozan Zeybek">
             <time datetime="2013">2013</time>
             <div class="entry">
@@ -432,11 +446,48 @@
               <div class="details"><span data-tr="Dergi makalesi">Journal article</span><span>Antipode 44(4), 1551–1568</span><span data-tr="İngilizce">English</span></div>
             </div>
           </li>
-          <li data-kind="phdthesis" data-language="en" data-year="2012" data-author="Sezai Ozan Zeybek">
-            <time datetime="2012">2012</time>
+          <li data-kind="article" data-language="en" data-year="2011" data-author="Sezai Ozan Zeybek">
+            <time datetime="2011">2011</time>
             <div class="entry">
-              <h3 lang="en">Silencing Provincial Geographies: A Small Town of No Consequence</h3>
-              <div class="details"><span data-tr="Doktora tezi">PhD thesis</span><span>The Open University</span><span data-tr="İngilizce">English</span></div>
+              <h3 lang="en"><a href="https://doi.org/10.1111/j.1467-6443.2011.01391.x">Small Towns in Turkey: Footnotes in Somebody Else’s History</a></h3>
+              <div class="details"><span data-tr="Dergi makalesi">Journal article</span><span>Journal of Historical Sociology 24(1), 100–115</span><span data-tr="İngilizce">English</span></div>
+            </div>
+          </li>
+            </ul>
+          </details>
+          <details class="publication-group">
+            <summary>
+              <span class="category-name" data-tr="Denemeler ve eleştiriler">Essays &amp; reviews</span>
+              <span class="category-count">9</span>
+              <span class="category-icon" aria-hidden="true"></span>
+            </summary>
+            <ul class="archive">
+          <li data-kind="review" data-language="tr" data-year="2026" data-author="Sezai Ozan Zeybek">
+            <time datetime="2026">2026</time>
+            <div class="entry">
+              <h3 lang="tr"><a href="https://bianet.org/yazi/berlin-ankara-olursa-sari-zarflar-318305">Berlin, Ankara olursa: Sarı Zarflar</a></h3>
+              <div class="details"><span data-tr="Film eleştirisi">Film review</span><span>bianet</span><span data-tr="Türkçe">Turkish</span></div>
+            </div>
+          </li>
+          <li data-kind="essay" data-language="tr" data-year="2025" data-author="Sezai Ozan Zeybek">
+            <time datetime="2025">2025</time>
+            <div class="entry">
+              <h3 lang="tr"><a href="https://birikimdergisi.com/dergiler/birikim/1/sayi-438-ekim-2025/10206">Yapay zekâ çağında hakikati (ve aklımızı) nasıl koruruz?</a></h3>
+              <div class="details"><span data-tr="Deneme">Essay</span><span>Birikim 438, 41–49</span><span data-tr="Türkçe">Turkish</span></div>
+            </div>
+          </li>
+          <li data-kind="essay" data-language="tr" data-year="2022" data-author="Sezai Ozan Zeybek">
+            <time datetime="2022">2022</time>
+            <div class="entry">
+              <h3 lang="tr"><a href="https://bianet.org/haber/hayvanlar-bizim-cocugumuz-mu-269312">Hayvanlar bizim çocuğumuz mu?</a></h3>
+              <div class="details"><span data-tr="Deneme">Essay</span><span>bianet</span><span data-tr="Türkçe">Turkish</span></div>
+            </div>
+          </li>
+          <li data-kind="essay" data-language="tr" data-year="2014" data-author="Sezai Ozan Zeybek">
+            <time datetime="2014">2014</time>
+            <div class="entry">
+              <h3 lang="tr"><a href="https://bianet.org/yazi/bu-cagin-irkcilari-biz-olabilir-miyiz-153015">Bu Çağın Irkçıları Biz Olabilir miyiz?</a></h3>
+              <div class="details"><span data-tr="Deneme">Essay</span><span>bianet</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
           <li data-kind="essay" data-language="tr" data-year="2012" data-author="Sezai Ozan Zeybek">
@@ -451,13 +502,6 @@
             <div class="entry">
               <h3 lang="tr"><a href="https://bianet.org/yazi/bundan-sonra-ya-komsu-ya-kardes-142314">Bundan Sonra Ya Komşu Ya Kardeş</a></h3>
               <div class="details"><span data-tr="Deneme">Essay</span><span>bianet</span><span data-tr="Türkçe">Turkish</span></div>
-            </div>
-          </li>
-          <li data-kind="article" data-language="en" data-year="2011" data-author="Sezai Ozan Zeybek">
-            <time datetime="2011">2011</time>
-            <div class="entry">
-              <h3 lang="en"><a href="https://doi.org/10.1111/j.1467-6443.2011.01391.x">Small Towns in Turkey: Footnotes in Somebody Else’s History</a></h3>
-              <div class="details"><span data-tr="Dergi makalesi">Journal article</span><span>Journal of Historical Sociology 24(1), 100–115</span><span data-tr="İngilizce">English</span></div>
             </div>
           </li>
           <li data-kind="essay" data-language="tr" data-year="2010" data-author="Sezai Ozan Zeybek">
@@ -481,6 +525,55 @@
               <div class="details"><span data-tr="Deneme">Essay</span><span>Birikim 197</span><span data-tr="Türkçe">Turkish</span></div>
             </div>
           </li>
+            </ul>
+          </details>
+          <details class="publication-group">
+            <summary>
+              <span class="category-name" data-tr="Çeviri ve doktora tezi">Translation &amp; dissertation</span>
+              <span class="category-count">2</span>
+              <span class="category-icon" aria-hidden="true"></span>
+            </summary>
+            <ul class="archive">
+          <li data-kind="translation" data-language="tr" data-year="2015" data-author="Michel-Rolph Trouillot">
+            <time datetime="2015">2015</time>
+            <div class="entry">
+              <h3 lang="tr">Geçmişi Susturmak: Tarihin Üretilmesi ve İktidar</h3>
+              <div class="details"><span>Michel-Rolph Trouillot</span><span data-tr="Çeviri">Translation</span><span>İthaki Yayınları</span><span data-tr="Türkçe">Turkish</span></div>
+            </div>
+          </li>
+          <li data-kind="phdthesis" data-language="en" data-year="2012" data-author="Sezai Ozan Zeybek">
+            <time datetime="2012">2012</time>
+            <div class="entry">
+              <h3 lang="en">Silencing Provincial Geographies: A Small Town of No Consequence</h3>
+              <div class="details"><span data-tr="Doktora tezi">PhD thesis</span><span>The Open University</span><span data-tr="İngilizce">English</span></div>
+            </div>
+          </li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="writing" aria-labelledby="writing-heading">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2 id="writing-heading" data-tr="Yazılar">Writing</h2>
+          <p><a href="https://ozanoyunbozan.blogspot.com/" data-tr="Oyunbozan arşivi">Oyunbozan archive</a></p>
+        </div>
+        <ul class="writing-list">
+          {% assign writings = site.data.writing | sort: 'date' | reverse %}
+          {% for post in writings %}
+          <li lang="{{ post.lang | default: 'tr' | escape }}">
+            {% if post.body %}
+            <details>
+              <summary>{{ post.title | escape }}</summary>
+              <div class="writing-body">{{ post.body | markdownify }}</div>
+            </details>
+            {% else %}
+            <h3><a href="{{ post.url | escape }}">{{ post.title | escape }}</a></h3>
+            {% endif %}
+            <p class="writing-meta"><time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: '%Y' }}</time>{% if post.credit %} · {{ post.credit | escape }}{% endif %}</p>
+          </li>
+          {% endfor %}
         </ul>
       </div>
     </section>
@@ -570,6 +663,7 @@
   <script>
     const languageButton = document.querySelector('#language');
     const filters = document.querySelector('#filters');
+    const publicationTools = document.querySelector('#publication-tools');
     const queryInput = document.querySelector('#query');
     const kindInput = document.querySelector('#kind');
     const workLanguage = document.querySelector('#work-language');
@@ -595,23 +689,42 @@
       return text.toLocaleLowerCase('tr').normalize('NFD').replace(/\p{M}/gu, '').replace(/ı/g, 'i');
     }
 
-    const entries = [...document.querySelectorAll('#archive li')].map((node) => ({
+    const groups = [...document.querySelectorAll('.publication-group')].map((node) => ({
       node,
-      search: normalize(node.querySelector('.entry').textContent + ' ' + node.dataset.author),
+      count: node.querySelector('.category-count'),
+      entries: [...node.querySelectorAll('li')].map((entry) => ({
+        entry,
+        search: normalize(entry.querySelector('.entry').textContent + ' ' + entry.dataset.author),
+      })),
     }));
+    let expandedBeforeFiltering = null;
 
     function updateResults() {
       const terms = normalize(queryInput.value).trim().split(/\s+/).filter(Boolean);
-      let count = 0;
-      for (const { node, search } of entries) {
-        const { kind, language, year } = node.dataset;
-        const matches = (!kindInput.value || kind === kindInput.value)
-          && (!workLanguage.value || language === workLanguage.value)
-          && (!yearInput.value || year === yearInput.value)
-          && terms.every((term) => search.includes(term));
-        node.hidden = !matches;
-        count += Number(matches);
+      const filtering = Boolean(terms.length || kindInput.value || workLanguage.value || yearInput.value);
+      if (filtering && expandedBeforeFiltering === null) {
+        expandedBeforeFiltering = groups.map(({ node }) => node.open);
       }
+      let count = 0;
+      for (const [index, group] of groups.entries()) {
+        let visible = 0;
+        for (const { entry, search } of group.entries) {
+          const { kind, language, year } = entry.dataset;
+          const matches = (!kindInput.value || kind === kindInput.value)
+            && (!workLanguage.value || language === workLanguage.value)
+            && (!yearInput.value || year === yearInput.value)
+            && terms.every((term) => search.includes(term));
+          entry.hidden = !matches;
+          visible += Number(matches);
+        }
+        group.node.hidden = visible === 0;
+        group.count.textContent = visible;
+        if (filtering) group.node.open = visible > 0;
+        else if (expandedBeforeFiltering !== null) group.node.open = expandedBeforeFiltering[index];
+        count += visible;
+      }
+      if (!filtering) expandedBeforeFiltering = null;
+      results.hidden = !filtering;
       if (!count) {
         results.textContent = locale === 'tr' ? 'Aramanıza uygun yayın bulunamadı.' : 'No publications match your search.';
         return;
@@ -644,8 +757,7 @@
     filters.addEventListener('submit', (event) => event.preventDefault());
     filters.addEventListener('input', updateResults);
     filters.addEventListener('reset', () => requestAnimationFrame(updateResults));
-    filters.hidden = false;
-    results.hidden = false;
+    publicationTools.hidden = false;
     languageButton.hidden = false;
     setLocale(new URLSearchParams(location.search).get('lang') === 'tr' ? 'tr' : 'en');
   </script>

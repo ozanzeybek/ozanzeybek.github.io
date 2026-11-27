@@ -1,0 +1,34 @@
+# Yeni yazı eklemek için title, date ve lang alanlarıyla bir kayıt ekle.
+# Bağlantı için url kullan. Tam metin için url yerine body: | yazıp
+# metnini girintili Markdown olarak ekle.
+
+- title: "“Radyasyon Var Diyen Dinsizdir:” Çernobil, Dizi, Bitmeyen Felaket"
+  date: "2020-11-09"
+  lang: tr
+  url: "https://ozanoyunbozan.blogspot.com/2020/11/radyasyon-var-diyen-dinsizdir-cernobil.html"
+
+- title: "Göz Hakkı, Kurdun-Kuşun Hakkı: Şehir, Gıda ve Paylaşmak Üzerine Bir Söyleşi"
+  date: "2019-08-25"
+  lang: tr
+  credit: "Hilâl Alkan ile"
+  url: "https://ozanoyunbozan.blogspot.com/2019/08/goz-hakk-kurdun-kusun-hakk-sehir-gda-ve.html"
+
+- title: "Vatandaşlık Yerine ‘Yaşamdaşlık’"
+  date: "2019-07-05"
+  lang: tr
+  url: "https://ozanoyunbozan.blogspot.com/2019/07/vatandaslk-yerine-yasamdaslk.html"
+
+- title: "Okullar Oyun Alanını Eşitler mi? (Okuya Okuya Köreldim! -1)"
+  date: "2019-01-08"
+  lang: tr
+  url: "https://ozanoyunbozan.blogspot.com/2019/01/okullar-oyun-alann-esitler-mi-okuya.html"
+
+- title: "Yas Tutmanın İnsan Olmayan Hâlleri"
+  date: "2018-01-14"
+  lang: tr
+  url: "https://ozanoyunbozan.blogspot.com/2018/01/yas-tutmann-insan-olmayan-halleri.html"
+
+- title: "Ayının Dengi (Çocuk Masalı)"
+  date: "2015-12-20"
+  lang: tr
+  url: "https://ozanoyunbozan.blogspot.com/2015/12/aynn-dengi-cocuk-masal.html"
